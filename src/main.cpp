@@ -1,28 +1,37 @@
 #include "main.h"
-#include <Stepper.h>
-
-// Define Constants
-
-const int STEPS_PER_REV = 32;
-const int GEAR_RED = 64;
-const int GEAR_RED2 = 2;
-
-// Number of steps per geared output rotation
-const int STEPS_PER_OUT_REV = STEPS_PER_REV * GEAR_RED * GEAR_RED2;
-
-Stepper steppermotor(STEPS_PER_REV, 8, 10, 9, 11);
 
 void setup()
 {
+  Serial.begin(9600);
+
+  stepper.setMaxSpeed(2000);
+  stepper.setAcceleration(1000);
+  stepper.moveTo(4000);
+
+  // updateListener = new EvtTimeListener(0, true, (EvtAction)update);
+  // mgr.addListener(updateListener);
+
+  // endStopListener = new EvtPinListener(END_STOP_PIN, (EvtAction)endStopReached);
+  // mgr.addListener(endStopListener);
+
+  Serial.println("Setup complete; looping...");
+}
+
+bool endStopReached()
+{
+  return (digitalRead(END_STOP_PIN) == HIGH);
 }
 
 void loop()
 {
-  steppermotor.setSpeed(1000);
-  steppermotor.step(STEPS_PER_OUT_REV);
-  delay(1000);
+  if (endStopReached())
+  {
+    currentBearing = 190;
+  }
 
-  steppermotor.setSpeed(1000);
-  steppermotor.step(-STEPS_PER_OUT_REV);
-  delay(1000);
+  if (stepper.distanceToGo() == 0)
+  {
+    stepper.moveTo(-stepper.currentPosition());
+  }
+  stepper.run();
 }
