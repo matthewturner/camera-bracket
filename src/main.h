@@ -6,6 +6,6 @@
 
 #include <AccelStepper.h>
 
-AccelStepper stepper(8, 9, 10, 11);
+// AccelStepper stepper(8, 9, 10, 11);
 
 #endif
