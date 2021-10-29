@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <AccelStepper.h>
+#include "CommandReader.h"
 
 const byte LeftEndStopPin = 5;
 const byte RightEndStopPin = 6;
@@ -17,6 +18,7 @@ const byte IN3 = 10;
 const byte IN4 = 11;
 
 AccelStepper stepper(AccelStepper::MotorInterfaceType::HALF4WIRE, IN1, IN3, IN2, IN4);
+CommandReader _commandModule(&Serial);
 
 bool leftEndStopReached();
 bool rightEndStopReached();
