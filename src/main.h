@@ -8,6 +8,8 @@ const byte LeftEndStopPin = 5;
 const byte RightEndStopPin = 6;
 const short MinLeftBearing = 20;
 const short MinRightBearing = 340;
+const short StepsInOneRevolution = 4060;
+const double DegreesInRevolution = 360.0;
 
 const byte IN1 = 8;
 const byte IN2 = 9;
@@ -18,5 +20,7 @@ AccelStepper stepper(AccelStepper::MotorInterfaceType::HALF4WIRE, IN1, IN3, IN2,
 
 bool leftEndStopReached();
 bool rightEndStopReached();
+short stepsFrom(short bearing);
+short bearingFrom(short steps);
 
 #endif
