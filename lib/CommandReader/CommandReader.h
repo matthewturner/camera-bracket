@@ -2,26 +2,24 @@
 #define CommandReader_h
 
 #include "IStreamReader.h"
+#include "Arduino.h"
 #include "string.h"
 
-const unsigned char NONE = 0;
-const unsigned char STOP = 1;
-const unsigned char LEFT_10 = 2;
-const unsigned char LEFT_25 = 3;
-const unsigned char LEFT_45 = 4;
-const unsigned char RIGHT_10 = 5;
-const unsigned char RIGHT_25 = 6;
-const unsigned char RIGHT_45 = 7;
+const uint8_t NONE = 0;
+const uint8_t STOP = 1;
+const uint8_t CALIBRATE = 2;
+const uint8_t LEFT_45 = 3;
+const uint8_t RIGHT_45 = 4;
 
 class CommandReader
 {
 public:
     CommandReader(IStreamReader *streamReader);
-    unsigned char tryReadCommand();
+    uint8_t tryReadCommand();
 
 private:
-    unsigned char tryReadInstruction();
-    unsigned char convertToCommand(unsigned char instructionLength);
+    uint8_t tryReadInstruction();
+    uint8_t convertToCommand(uint8_t instructionLength);
     char _commandBuffer[20];
     IStreamReader *_streamReader;
 };
