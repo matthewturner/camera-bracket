@@ -7,8 +7,8 @@ void setup()
   pinMode(LeftEndStopPin, INPUT_PULLUP);
   pinMode(RightEndStopPin, INPUT_PULLUP);
 
-  _stepper.setMaxSpeed(1500);
-  _stepper.setAcceleration(1000);
+  _stepper.setMaxSpeed(1000);
+  _stepper.setAcceleration(500);
 
   Serial.println("Setup complete");
 

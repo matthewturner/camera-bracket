@@ -11,7 +11,7 @@ const byte RightEndStopPin = 6;
 const short MinLeftBearing = 20;
 const short MinRightBearing = 340;
 const double DegreesInRevolution = 360.0;
-const short DefaultStepsInRevolution = 4400;
+const short DefaultStepsInRevolution = 4600;
 const double DegreesInRange = 320.0;
 
 const byte IN1 = 8;
