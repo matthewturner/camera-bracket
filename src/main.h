@@ -11,7 +11,7 @@ const byte RightEndStopPin = 6;
 const short MinLeftBearing = 20;
 const short MinRightBearing = 340;
 const double DegreesInRevolution = 360.0;
-const short DefaultStepsInRevolution = 4060;
+const short DefaultStepsInRevolution = 4400;
 const double DegreesInRange = 320.0;
 
 const byte IN1 = 8;
@@ -22,8 +22,9 @@ const byte IN4 = 11;
 const byte STOPPED = 0;
 const byte CALIBRATING_LEFT = 1;
 const byte CALIBRATING_RIGHT = 2;
-const byte MOVING_LEFT = 3;
-const byte MOVING_RIGHT = 4;
+const byte CALIBRATING_CENTER = 3;
+const byte MOVING_LEFT = 4;
+const byte MOVING_RIGHT = 5;
 
 short _stepsInRange = DefaultStepsInRevolution;
 byte _state = STOPPED;
@@ -36,6 +37,13 @@ bool rightEndStopReached();
 short stepsFrom(short bearing);
 short bearingFrom(short steps);
 void setState(byte state);
+void moveRight(byte relative);
+void moveLeft(byte relative);
+
+void calibrateRight();
+void calibrateLeft();
+void calibrateCenter();
+
 byte state();
 
 #endif
