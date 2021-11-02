@@ -7,8 +7,8 @@ void setup()
   pinMode(LeftEndStopPin, INPUT_PULLUP);
   pinMode(RightEndStopPin, INPUT_PULLUP);
 
-  _stepper.setMaxSpeed(1000);
-  _stepper.setAcceleration(500);
+  _stepper.setMaxSpeed(MaxSpeed);
+  _stepper.setAcceleration(StandardAcceleration);
 
   Serial.println("Setup complete");
 
@@ -26,6 +26,7 @@ void loop()
 {
   if (leftEndStopReached())
   {
+    _stepper.setAcceleration(EmergencyAcceleration);
     if (state() == CALIBRATING_LEFT)
     {
       Serial.println("Left end stop reached, setting position...");
@@ -47,6 +48,7 @@ void loop()
 
   if (rightEndStopReached())
   {
+    _stepper.setAcceleration(EmergencyAcceleration);
     if (state() == CALIBRATING_RIGHT)
     {
       Serial.println("Right end stop reached, setting position...");
@@ -66,6 +68,7 @@ void loop()
     {
       Serial.println("Calibrating center position...");
       _stepper.setCurrentPosition(0);
+      _stepper.setAcceleration(StandardAcceleration);
       setState(STOPPED);
     }
   }
