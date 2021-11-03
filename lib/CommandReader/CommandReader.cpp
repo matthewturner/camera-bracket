@@ -5,7 +5,7 @@ CommandReader::CommandReader(IStreamReader *streamReader)
     _streamReader = streamReader;
 }
 
-Command CommandReader::tryReadCommand()
+bool CommandReader::tryReadCommand(Command &command)
 {
     uint8_t instructionLength = tryReadInstruction();
     Command command = convertToCommand(instructionLength);
@@ -40,7 +40,7 @@ Command CommandReader::convertToCommand(uint8_t instructionLength)
     Command command;
     command.Value = NONE;
     command.Data = 0;
-    
+
     if (instructionLength == 0)
     {
         return command;

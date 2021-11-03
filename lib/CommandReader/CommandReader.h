@@ -5,15 +5,19 @@
 #include "stdint.h"
 #include "string.h"
 
-const uint8_t NONE = 0;
-const uint8_t STOP = 1;
-const uint8_t CALIBRATE = 2;
-const uint8_t LEFT_45 = 3;
-const uint8_t RIGHT_45 = 4;
+enum commands
+{
+    NONE = 0,
+    STOP = 1,
+    CALIBRATE = 2,
+    LEFT_45 = 3,
+    RIGHT_45 = 4
+};
+typedef enum commands Commands;
 
 struct command
 {
-    uint8_t Value;
+    Commands Value;
     uint8_t Data;
 };
 typedef struct command Command;
