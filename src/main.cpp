@@ -76,6 +76,9 @@ void loop()
   uint8_t command = _commandReader.tryReadCommand();
   switch (command)
   {
+  case NONE:
+    // nothing
+    break;
   case STOP:
     Serial.println("Command: STOP");
     setState(STOPPED);
@@ -83,30 +86,37 @@ void loop()
     break;
   case CALIBRATE:
     Serial.println("Command: CALIBRATE");
-    setState(CALIBRATING_LEFT);
-    _stepper.move(-DefaultStepsInRevolution);
+    calibrateLeft();
     break;
   case LEFT_45:
+    Serial.println("Command: LEFT 45");
     setState(MOVING_LEFT);
-    _stepper.move(stepsFrom(45));
+    _stepper.move(stepsFrom(left(45)));
     break;
   case RIGHT_45:
+    Serial.println("Command: RIGHT 45");
     setState(MOVING_RIGHT);
-    _stepper.move(stepsFrom(-45));
+    _stepper.move(stepsFrom(right(45)));
+    break;
+  default:
+    Serial.print("Unknown command: ");
+    Serial.println(command);
     break;
   }
+
   _stepper.run();
 }
 
 void calibrateCenter()
 {
   Serial.println("Calibrating center...");
-  _stepsInRange = _stepper.currentPosition();
+  short currentPosition = _stepper.currentPosition();
+  _stepsInRange = abs(currentPosition);
   Serial.print("Current position: ");
-  Serial.println(_stepsInRange);
+  Serial.println(currentPosition);
   setState(CALIBRATING_CENTER);
   Serial.print("Moving to center position: ");
-  short centerPosition = _stepsInRange / 2;
+  short centerPosition = currentPosition / 2;
   Serial.println(centerPosition);
   _stepper.moveTo(centerPosition);
 }
@@ -116,22 +126,24 @@ void calibrateRight()
   Serial.println("Calibrating right...");
   setState(CALIBRATING_RIGHT);
   _stepper.setCurrentPosition(0);
-  _stepper.move(-DefaultStepsInRevolution);
+  _stepper.move(right(DefaultStepsInRevolution));
 }
 
 void calibrateLeft()
 {
   Serial.println("Calibrating left...");
   setState(CALIBRATING_LEFT);
-  _stepper.move(DefaultStepsInRevolution);
+  _stepper.move(left(DefaultStepsInRevolution));
 }
 
-void moveRight(byte relative)
+short right(short relative)
 {
+  return -relative;
 }
 
-void moveLeft(byte relative)
+short left(short relative)
 {
+  return relative;
 }
 
 byte state()
