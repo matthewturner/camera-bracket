@@ -14,7 +14,7 @@ void test_invalid_command(void)
 
 void test_non_terminated_command(void)
 {
-    streamReader.setCommand(">inflate");
+    streamReader.setCommand(">calibrate");
     unsigned char command = commandReader.tryReadCommand();
     TEST_ASSERT_EQUAL(NONE, command);
 }

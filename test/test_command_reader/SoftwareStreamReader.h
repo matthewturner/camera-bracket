@@ -1,4 +1,4 @@
-#include "IStreamReader.h"
+#include <IStreamReader.h>
 
 class SoftwareStreamReader : public IStreamReader
 {
