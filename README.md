@@ -12,15 +12,14 @@ Install command line tools by following the installation instructions for [Windo
 
 Deploy code to your Arduino and run the following command in a terminal:
 
-
-```
- pio device monitor --eol=CRLF --echo
+```powershell
+ pio device monitor --eol=CRLF --echo --filter=send_on_enter
 ```
 
 ## Unit Testing
 
 Run the following command after installing Platform IO:
 
-```
+```powershell
 pio test -e native
 ```
