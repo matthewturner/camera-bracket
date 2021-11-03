@@ -2,7 +2,7 @@
 #define CommandReader_h
 
 #include "IStreamReader.h"
-#include "Arduino.h"
+#include "stdint.h"
 #include "string.h"
 
 const uint8_t NONE = 0;
