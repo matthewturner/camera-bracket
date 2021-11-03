@@ -11,16 +11,24 @@ const uint8_t CALIBRATE = 2;
 const uint8_t LEFT_45 = 3;
 const uint8_t RIGHT_45 = 4;
 
+struct command
+{
+    uint8_t Value;
+    uint8_t Data;
+};
+typedef struct command Command;
+
 class CommandReader
 {
 public:
     CommandReader(IStreamReader *streamReader);
-    uint8_t tryReadCommand();
+    bool tryReadCommand(Command &command);
 
 private:
     uint8_t tryReadInstruction();
-    uint8_t convertToCommand(uint8_t instructionLength);
+    Command convertToCommand(uint8_t instructionLength);
     char _commandBuffer[20];
+    char _dataBuffer[20];
     IStreamReader *_streamReader;
 };
 

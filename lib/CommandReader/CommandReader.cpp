@@ -5,10 +5,10 @@ CommandReader::CommandReader(IStreamReader *streamReader)
     _streamReader = streamReader;
 }
 
-uint8_t CommandReader::tryReadCommand()
+Command CommandReader::tryReadCommand()
 {
     uint8_t instructionLength = tryReadInstruction();
-    uint8_t command = convertToCommand(instructionLength);
+    Command command = convertToCommand(instructionLength);
     return command;
 }
 
@@ -35,27 +35,35 @@ uint8_t CommandReader::tryReadInstruction()
     return 0;
 }
 
-uint8_t CommandReader::convertToCommand(uint8_t instructionLength)
+Command CommandReader::convertToCommand(uint8_t instructionLength)
 {
+    Command command;
+    command.Value = NONE;
+    command.Data = 0;
+    
     if (instructionLength == 0)
     {
-        return NONE;
+        return command;
     }
     if (strcmp(_commandBuffer, "stop") == 0)
     {
-        return STOP;
+        command.Value = STOP;
+        return command;
     }
     if (strcmp(_commandBuffer, "calibrate") == 0)
     {
-        return CALIBRATE;
+        command.Value = CALIBRATE;
+        return command;
     }
     if (strcmp(_commandBuffer, "left-45") == 0)
     {
-        return LEFT_45;
+        command.Value = LEFT_45;
+        return command;
     }
     if (strcmp(_commandBuffer, "right-45") == 0)
     {
-        return RIGHT_45;
+        command.Value = RIGHT_45;
+        return command;
     }
-    return NONE;
+    return command;
 }
