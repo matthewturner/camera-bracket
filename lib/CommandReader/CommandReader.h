@@ -11,7 +11,8 @@ enum commands
     STOP = 1,
     CALIBRATE = 2,
     LEFT_45 = 3,
-    RIGHT_45 = 4
+    RIGHT_45 = 4,
+    MOVE_TO = 5
 };
 typedef enum commands Commands;
 
@@ -26,13 +27,15 @@ class CommandReader
 {
 public:
     CommandReader(IStreamReader *streamReader);
-    bool tryReadCommand(Command &command);
+    bool tryReadCommand(Command *command);
 
 private:
-    uint8_t tryReadInstruction();
-    Command convertToCommand(uint8_t instructionLength);
+    bool tryReadInstruction();
+    bool convertToCommand(Command *command);
     char _commandBuffer[20];
     char _dataBuffer[20];
+    short _commandIndex = -1;
+    short _dataIndex = -1;
     IStreamReader *_streamReader;
 };
 

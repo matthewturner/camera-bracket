@@ -73,34 +73,34 @@ void loop()
     }
   }
 
-  uint8_t command = _commandReader.tryReadCommand();
-  switch (command)
+  _commandReader.tryReadCommand(&_command);
+  switch (_command.Value)
   {
-  case NONE:
+  case Commands::NONE:
     // nothing
     break;
-  case STOP:
+  case Commands::STOP:
     Serial.println("Command: STOP");
     setState(STOPPED);
     _stepper.stop();
     break;
-  case CALIBRATE:
+  case Commands::CALIBRATE:
     Serial.println("Command: CALIBRATE");
     calibrateLeft();
     break;
-  case LEFT_45:
+  case Commands::LEFT_45:
     Serial.println("Command: LEFT 45");
     setState(MOVING_LEFT);
     _stepper.move(stepsFrom(left(45)));
     break;
-  case RIGHT_45:
+  case Commands::RIGHT_45:
     Serial.println("Command: RIGHT 45");
     setState(MOVING_RIGHT);
     _stepper.move(stepsFrom(right(45)));
     break;
   default:
     Serial.print("Unknown command: ");
-    Serial.println(command);
+    Serial.println(_command.Value);
     break;
   }
 

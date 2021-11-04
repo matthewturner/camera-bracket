@@ -33,6 +33,7 @@ short _stepsInRange = DefaultStepsInRevolution;
 byte _state = STOPPED;
 AccelStepper _stepper(AccelStepper::MotorInterfaceType::HALF4WIRE, IN1, IN3, IN2, IN4);
 HardwareStreamReader _streamReader(&Serial);
+Command _command;
 CommandReader _commandReader(&_streamReader);
 
 bool leftEndStopReached();

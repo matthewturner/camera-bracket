@@ -5,65 +5,86 @@ CommandReader::CommandReader(IStreamReader *streamReader)
     _streamReader = streamReader;
 }
 
-bool CommandReader::tryReadCommand(Command &command)
+bool CommandReader::tryReadCommand(Command *command)
 {
-    uint8_t instructionLength = tryReadInstruction();
-    Command command = convertToCommand(instructionLength);
-    return command;
+    if (tryReadInstruction())
+    {
+        return convertToCommand(command);
+    }
+    return false;
 }
 
-uint8_t CommandReader::tryReadInstruction()
+bool CommandReader::tryReadInstruction()
 {
-    int index = -1;
+    _commandIndex = -1;
+    _dataIndex = -1;
     while (_streamReader->available())
     {
         char ch = _streamReader->read();
         switch (ch)
         {
         case '>':
-            index = 0;
+            _commandIndex = 0;
+            break;
+        case ':':
+            _dataIndex = 0;
             break;
         case '!':
-            _commandBuffer[index] = '\0';
-            return index + 1;
+            _commandBuffer[_commandIndex] = '\0';
+            _commandIndex++;
+            _dataBuffer[_dataIndex] = '\0';
+            _dataIndex++;
+            return true;
         default:
-            _commandBuffer[index] = ch;
-            index++;
+            if (_dataIndex == -1)
+            {
+                _commandBuffer[_commandIndex] = ch;
+                _commandIndex++;
+            }
+            else
+            {
+                _dataBuffer[_dataIndex] = ch;
+                _dataIndex++;
+            }
             break;
         }
     }
-    return 0;
+    return false;
 }
 
-Command CommandReader::convertToCommand(uint8_t instructionLength)
+bool CommandReader::convertToCommand(Command *command)
 {
-    Command command;
-    command.Value = NONE;
-    command.Data = 0;
+    command->Value = NONE;
+    command->Data = 0;
 
-    if (instructionLength == 0)
+    if (_commandIndex == 0)
     {
-        return command;
+        return false;
     }
     if (strcmp(_commandBuffer, "stop") == 0)
     {
-        command.Value = STOP;
-        return command;
+        command->Value = STOP;
+        return true;
     }
     if (strcmp(_commandBuffer, "calibrate") == 0)
     {
-        command.Value = CALIBRATE;
-        return command;
+        command->Value = CALIBRATE;
+        return true;
     }
     if (strcmp(_commandBuffer, "left-45") == 0)
     {
-        command.Value = LEFT_45;
-        return command;
+        command->Value = LEFT_45;
+        return true;
     }
     if (strcmp(_commandBuffer, "right-45") == 0)
     {
-        command.Value = RIGHT_45;
-        return command;
+        command->Value = RIGHT_45;
+        return true;
     }
-    return command;
+    if (strcmp(_commandBuffer, "move-to") == 0)
+    {
+        command->Value = MOVE_TO;
+        return true;
+    }
+    return false;
 }
