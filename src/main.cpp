@@ -225,6 +225,7 @@ void reportStatus()
   reportValue("bearing", bearingFrom(adjust(_stepper.currentPosition())), true);
   reportValue("target", bearingFrom(adjust(_stepper.targetPosition())), true);
   reportValue("distanceToGo", _stepper.distanceToGo(), false);
+  Serial.println();
   Serial.println("}");
 }
 
@@ -245,7 +246,7 @@ void reportValue(const char *name, const char *value, bool includeDelimiter)
   Serial.print("\": ");
   Serial.print("\"");
   Serial.print(value);
-  Serial.println("\"");
+  Serial.print("\"");
   if (includeDelimiter)
   {
     Serial.println(",");
