@@ -10,16 +10,17 @@ enum commands
     NONE = 0,
     STOP = 1,
     CALIBRATE = 2,
-    LEFT_45 = 3,
-    RIGHT_45 = 4,
-    MOVE_TO = 5
+    LEFT = 3,
+    RIGHT = 4,
+    MOVE_TO = 5,
+    STATUS = 6
 };
 typedef enum commands Commands;
 
 struct command
 {
     Commands Value;
-    uint8_t Data;
+    short Data;
 };
 typedef struct command Command;
 

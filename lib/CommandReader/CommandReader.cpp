@@ -1,4 +1,5 @@
 #include "CommandReader.h"
+#include <stdlib.h>
 
 CommandReader::CommandReader(IStreamReader *streamReader)
 {
@@ -20,7 +21,7 @@ bool CommandReader::tryReadInstruction()
     _dataIndex = -1;
     while (_streamReader->available())
     {
-        char ch = _streamReader->read();
+        int ch = _streamReader->read();
         switch (ch)
         {
         case '>':
@@ -32,8 +33,11 @@ bool CommandReader::tryReadInstruction()
         case '!':
             _commandBuffer[_commandIndex] = '\0';
             _commandIndex++;
-            _dataBuffer[_dataIndex] = '\0';
-            _dataIndex++;
+            if (_dataIndex >= 0)
+            {
+                _dataBuffer[_dataIndex] = '\0';
+                _dataIndex++;
+            }
             return true;
         default:
             if (_dataIndex == -1)
@@ -71,19 +75,25 @@ bool CommandReader::convertToCommand(Command *command)
         command->Value = CALIBRATE;
         return true;
     }
-    if (strcmp(_commandBuffer, "left-45") == 0)
+    if (strcmp(_commandBuffer, "left") == 0)
     {
-        command->Value = LEFT_45;
+        command->Value = LEFT;
         return true;
     }
-    if (strcmp(_commandBuffer, "right-45") == 0)
+    if (strcmp(_commandBuffer, "right") == 0)
     {
-        command->Value = RIGHT_45;
+        command->Value = RIGHT;
         return true;
     }
     if (strcmp(_commandBuffer, "move-to") == 0)
     {
         command->Value = MOVE_TO;
+        command->Data = atoi(_dataBuffer);
+        return true;
+    }
+    if (strcmp(_commandBuffer, "status") == 0)
+    {
+        command->Value = STATUS;
         return true;
     }
     return false;

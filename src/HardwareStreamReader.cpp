@@ -10,7 +10,7 @@ bool HardwareStreamReader::available()
     return _stream->available();
 }
 
-char HardwareStreamReader::read()
+int HardwareStreamReader::read()
 {
     delay(2);
     return _stream->read();

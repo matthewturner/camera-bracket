@@ -41,18 +41,18 @@ void test_valid_command_returns_true(void)
     TEST_ASSERT_TRUE(actual);
 }
 
-void test_left_45_command(void)
+void test_left_command(void)
 {
-    streamReader.setCommand(">left-45!");
+    streamReader.setCommand(">left!");
     bool actual = commandReader.tryReadCommand(&command);
-    TEST_ASSERT_EQUAL(Commands::LEFT_45, command.Value);
+    TEST_ASSERT_EQUAL(Commands::LEFT, command.Value);
 }
 
-void test_right_45_command(void)
+void test_right_command(void)
 {
-    streamReader.setCommand(">right-45!");
+    streamReader.setCommand(">right!");
     bool actual = commandReader.tryReadCommand(&command);
-    TEST_ASSERT_EQUAL(Commands::RIGHT_45, command.Value);
+    TEST_ASSERT_EQUAL(Commands::RIGHT, command.Value);
 }
 
 void test_stop_command(void)
@@ -69,12 +69,36 @@ void test_embedded_command(void)
     TEST_ASSERT_EQUAL(Commands::CALIBRATE, command.Value);
 }
 
-void test_command_with_value(void)
+void test_command_with_missing_data(void)
+{
+    streamReader.setCommand(">move-to:!");
+    bool actual = commandReader.tryReadCommand(&command);
+    TEST_ASSERT_EQUAL(Commands::MOVE_TO, command.Value);
+    TEST_ASSERT_EQUAL(0, command.Data);
+}
+
+void test_command_with_invalid_data(void)
+{
+    streamReader.setCommand(">move-to:xxx!");
+    bool actual = commandReader.tryReadCommand(&command);
+    TEST_ASSERT_EQUAL(Commands::MOVE_TO, command.Value);
+    TEST_ASSERT_EQUAL(0, command.Data);
+}
+
+void test_command_with_positive_data(void)
 {
     streamReader.setCommand(">move-to:35!");
     bool actual = commandReader.tryReadCommand(&command);
     TEST_ASSERT_EQUAL(Commands::MOVE_TO, command.Value);
-    // TEST_ASSERT_EQUAL(35, command.Data);
+    TEST_ASSERT_EQUAL(35, command.Data);
+}
+
+void test_command_with_negative_data(void)
+{
+    streamReader.setCommand(">move-to:-35!");
+    bool actual = commandReader.tryReadCommand(&command);
+    TEST_ASSERT_EQUAL(Commands::MOVE_TO, command.Value);
+    TEST_ASSERT_EQUAL(-35, command.Data);
 }
 
 int main(int argc, char **argv)
@@ -85,11 +109,14 @@ int main(int argc, char **argv)
     RUN_TEST(test_non_terminated_command);
     RUN_TEST(test_calibrate_command);
     RUN_TEST(test_valid_command_returns_true);
-    RUN_TEST(test_left_45_command);
-    RUN_TEST(test_right_45_command);
+    RUN_TEST(test_left_command);
+    RUN_TEST(test_right_command);
     RUN_TEST(test_stop_command);
     RUN_TEST(test_embedded_command);
-    RUN_TEST(test_command_with_value);
+    RUN_TEST(test_command_with_missing_data);
+    RUN_TEST(test_command_with_invalid_data);
+    RUN_TEST(test_command_with_positive_data);
+    RUN_TEST(test_command_with_negative_data);
     UNITY_END();
 
     return 0;

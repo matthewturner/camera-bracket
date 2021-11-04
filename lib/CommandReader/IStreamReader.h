@@ -5,7 +5,7 @@ class IStreamReader
 {
 public:
     virtual bool available() = 0;
-    virtual char read() = 0;
+    virtual int read() = 0;
 };
 
 #endif
