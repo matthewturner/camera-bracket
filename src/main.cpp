@@ -4,6 +4,8 @@ void setup()
 {
   Serial.begin(9600);
 
+  setupStates();
+
   pinMode(LeftEndStopPin, INPUT_PULLUP);
   pinMode(RightEndStopPin, INPUT_PULLUP);
 
@@ -73,38 +75,73 @@ void loop()
     }
   }
 
-  uint8_t command = _commandReader.tryReadCommand();
-  switch (command)
+  if (_stepper.distanceToGo() == 0)
   {
-  case NONE:
+    setState(STOPPED);
+  }
+
+  _commandReader.tryReadCommand(&_command);
+  switch (_command.Value)
+  {
+  case Commands::NONE:
     // nothing
     break;
-  case STOP:
+  case Commands::STOP:
     Serial.println("Command: STOP");
     setState(STOPPED);
     _stepper.stop();
     break;
-  case CALIBRATE:
+  case Commands::STATUS:
+    Serial.println("Command: STATUS");
+    reportStatus();
+    break;
+  case Commands::CALIBRATE:
     Serial.println("Command: CALIBRATE");
     calibrateLeft();
     break;
-  case LEFT_45:
-    Serial.println("Command: LEFT 45");
+  case Commands::LEFT:
+    Serial.println("Command: LEFT");
     setState(MOVING_LEFT);
-    _stepper.move(stepsFrom(left(45)));
+    _stepper.move(stepsFrom(left(180)));
     break;
-  case RIGHT_45:
-    Serial.println("Command: RIGHT 45");
+  case Commands::RIGHT:
+    Serial.println("Command: RIGHT");
     setState(MOVING_RIGHT);
-    _stepper.move(stepsFrom(right(45)));
+    _stepper.move(stepsFrom(right(180)));
+    break;
+  case Commands::MOVE_TO:
+    Serial.println("Command: MOVE_TO");
+    moveTo();
     break;
   default:
     Serial.print("Unknown command: ");
-    Serial.println(command);
+    Serial.println(_command.Value);
     break;
   }
 
   _stepper.run();
+}
+
+void moveTo()
+{
+  short currentBearing = bearingFrom(adjust(_stepper.currentPosition()));
+  short newBearing = _command.Data;
+  if (newBearing == currentBearing)
+  {
+    Serial.println("Already there");
+  }
+  else
+  {
+    if (newBearing > currentBearing)
+    {
+      setState(MOVING_RIGHT);
+    }
+    else
+    {
+      setState(MOVING_LEFT);
+    }
+    _stepper.moveTo(stepsFrom(adjust(newBearing)));
+  }
 }
 
 void calibrateCenter()
@@ -134,6 +171,11 @@ void calibrateLeft()
   Serial.println("Calibrating left...");
   setState(CALIBRATING_LEFT);
   _stepper.move(left(DefaultStepsInRevolution));
+}
+
+short adjust(short relative)
+{
+  return -relative;
 }
 
 short right(short relative)
@@ -174,4 +216,51 @@ bool leftEndStopReached()
 bool rightEndStopReached()
 {
   return (digitalRead(RightEndStopPin) == LOW);
+}
+
+void reportStatus()
+{
+  Serial.println("{");
+  reportValue("status", _states[_state], true);
+  reportValue("bearing", bearingFrom(adjust(_stepper.currentPosition())), true);
+  reportValue("target", bearingFrom(adjust(_stepper.targetPosition())), true);
+  reportValue("distanceToGo", _stepper.distanceToGo(), false);
+  Serial.println();
+  Serial.println("}");
+}
+
+void setupStates()
+{
+  _states[STOPPED] = "stopped";
+  _states[CALIBRATING_LEFT] = "calibrating-left";
+  _states[CALIBRATING_RIGHT] = "calibrating-right";
+  _states[CALIBRATING_CENTER] = "calibrating-center";
+  _states[MOVING_LEFT] = "moving-left";
+  _states[MOVING_RIGHT] = "moving-right";
+}
+
+void reportValue(const char *name, const char *value, bool includeDelimiter)
+{
+  Serial.print("  \"");
+  Serial.print(name);
+  Serial.print("\": ");
+  Serial.print("\"");
+  Serial.print(value);
+  Serial.print("\"");
+  if (includeDelimiter)
+  {
+    Serial.println(",");
+  }
+}
+
+void reportValue(const char *name, short value, bool includeDelimiter)
+{
+  Serial.print("  \"");
+  Serial.print(name);
+  Serial.print("\": ");
+  Serial.print(value);
+  if (includeDelimiter)
+  {
+    Serial.println(",");
+  }
 }

@@ -5,22 +5,38 @@
 #include "stdint.h"
 #include "string.h"
 
-const uint8_t NONE = 0;
-const uint8_t STOP = 1;
-const uint8_t CALIBRATE = 2;
-const uint8_t LEFT_45 = 3;
-const uint8_t RIGHT_45 = 4;
+enum commands
+{
+    NONE = 0,
+    STOP = 1,
+    CALIBRATE = 2,
+    LEFT = 3,
+    RIGHT = 4,
+    MOVE_TO = 5,
+    STATUS = 6
+};
+typedef enum commands Commands;
+
+struct command
+{
+    Commands Value;
+    short Data;
+};
+typedef struct command Command;
 
 class CommandReader
 {
 public:
     CommandReader(IStreamReader *streamReader);
-    uint8_t tryReadCommand();
+    bool tryReadCommand(Command *command);
 
 private:
-    uint8_t tryReadInstruction();
-    uint8_t convertToCommand(uint8_t instructionLength);
+    bool tryReadInstruction();
+    bool convertToCommand(Command *command);
     char _commandBuffer[20];
+    char _dataBuffer[20];
+    short _commandIndex = -1;
+    short _dataIndex = -1;
     IStreamReader *_streamReader;
 };
 

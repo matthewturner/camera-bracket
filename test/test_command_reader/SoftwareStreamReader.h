@@ -5,7 +5,7 @@ class SoftwareStreamReader : public IStreamReader
 public:
     void setCommand(const char *command);
     bool available() override;
-    char read() override;
+    int read() override;
 
 private:
     const char *_command;

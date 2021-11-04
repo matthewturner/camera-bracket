@@ -11,7 +11,7 @@ bool SoftwareStreamReader::available()
     return *(_command + _index) != '\0';
 }
 
-char SoftwareStreamReader::read()
+int SoftwareStreamReader::read()
 {
     _index++;
     return *(_command + _index - 1);

@@ -31,8 +31,10 @@ const byte MOVING_RIGHT = 5;
 
 short _stepsInRange = DefaultStepsInRevolution;
 byte _state = STOPPED;
+const char *_states[6];
 AccelStepper _stepper(AccelStepper::MotorInterfaceType::HALF4WIRE, IN1, IN3, IN2, IN4);
 HardwareStreamReader _streamReader(&Serial);
+Command _command;
 CommandReader _commandReader(&_streamReader);
 
 bool leftEndStopReached();
@@ -40,6 +42,7 @@ bool rightEndStopReached();
 short stepsFrom(short bearing);
 short bearingFrom(short steps);
 void setState(byte state);
+short adjust(short relative);
 short right(short relative);
 short left(short relative);
 
@@ -48,5 +51,11 @@ void calibrateLeft();
 void calibrateCenter();
 
 byte state();
+
+void moveTo();
+void setupStates();
+void reportStatus();
+void reportValue(const char *name, const char *value, bool includeDelimiter);
+void reportValue(const char *name, short value, bool includeDelimiter);
 
 #endif

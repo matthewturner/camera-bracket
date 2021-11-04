@@ -9,7 +9,7 @@ class HardwareStreamReader : public IStreamReader
 public:
     HardwareStreamReader(HardwareSerial *stream);
     bool available() override;
-    char read() override;
+    int read() override;
 
 private:
     HardwareSerial *_stream;
