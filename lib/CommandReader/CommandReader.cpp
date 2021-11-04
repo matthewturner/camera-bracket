@@ -1,6 +1,5 @@
 #include "CommandReader.h"
 #include <stdlib.h>
-#include <Arduino.h>
 
 CommandReader::CommandReader(IStreamReader *streamReader)
 {
@@ -11,7 +10,7 @@ bool CommandReader::tryReadCommand(Command *command)
 {
     command->Value = NONE;
     command->Data = 0;
-    
+
     if (tryReadInstruction())
     {
         return convertToCommand(command);
