@@ -11,9 +11,9 @@ const byte RightEndStopPin = 6;
 const short MinLeftBearing = 20;
 const short MinRightBearing = 340;
 const double DegreesInRevolution = 360.0;
-const short DefaultStepsInRevolution = 8000;
+const short DefaultStepsInRevolution = 16000;
 const double DegreesInRange = 184.0;
-const short MaxSpeed = 1000;
+const short MaxSpeed = 1500;
 const short EmergencyAcceleration = 10000;
 const short StandardAcceleration = 1000;
 
