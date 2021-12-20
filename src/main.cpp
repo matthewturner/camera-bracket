@@ -175,17 +175,17 @@ void calibrateLeft()
 
 short adjust(short relative)
 {
-  return -relative;
+  return relative;
 }
 
 short right(short relative)
 {
-  return -relative;
+  return relative;
 }
 
 short left(short relative)
 {
-  return relative;
+  return -relative;
 }
 
 byte state()
